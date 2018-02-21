@@ -2,7 +2,6 @@ package com.example.model;
 
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.Scanner;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -81,19 +80,19 @@ public class Manufacturer implements Serializable,Comparator<Manufacturer>, Comp
 		this.models = models;
 	}
 
-	public Model addModel(Model model) {
-		getModels().add(model);
-		model.setManufacturer(this);
-
-		return model;
-	}
-
-	public Model removeModel(Model model) {
-		getModels().remove(model);
-		model.setManufacturer(null);
-
-		return model;
-	}
+//	public Model addModel(Model model) {
+//		getModels().add(model);
+//		model.setManufacturer(this);
+//
+//		return model;
+//	}
+//
+//	public Model removeModel(Model model) {
+//		getModels().remove(model);
+//		model.setManufacturer(null);
+//
+//		return model;
+//	}
 	
 	/*
 	 * (non-Javadoc)
@@ -112,17 +111,17 @@ public class Manufacturer implements Serializable,Comparator<Manufacturer>, Comp
 		return o1.manufacturerCode - o2.manufacturerCode;
 	}
 	
-	public void enterInfo() {
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Name manufacturer: ");
-		manufacturerName = sc.nextLine();
-		System.out.println("Detail manufacturer: ");
-		manufacurerDetails = sc.nextLine();	
-	}
-
-	public void showInfo() {
-		System.out.println("Name manufacturer: "+ this.manufacturerName);
-		System.out.println("Detail manufacturer: "+this.manufacurerDetails);		
-	}
+//	public void enterInfo() {
+//		Scanner sc = new Scanner(System.in);
+//		System.out.println("Name manufacturer: ");
+//		manufacturerName = sc.nextLine();
+//		System.out.println("Detail manufacturer: ");
+//		manufacurerDetails = sc.nextLine();	
+//	}
+//
+//	public void showInfo() {
+//		System.out.println("Name manufacturer: "+ this.manufacturerName);
+//		System.out.println("Detail manufacturer: "+this.manufacurerDetails);		
+//	}
 
 }

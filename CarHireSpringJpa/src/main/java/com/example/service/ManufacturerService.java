@@ -8,17 +8,18 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.iservice.IManufactureService;
 import com.example.model.Manufacturer;
 import com.example.repository.IManufacturerRepository;
 
 @Service
-public class ManufacturerService {
+public class ManufacturerService implements IManufactureService{
 	private static final Logger log = LogManager.getLogger(ManufacturerService.class);
 	@Autowired
 	private IManufacturerRepository manufacturerRepository;
 	// Get All Notes
 
-	@SuppressWarnings("unchecked")
+	@Override
 	public List<Manufacturer> findAllManufacturer() {
 		List<Manufacturer> lstManu = (List<Manufacturer>) manufacturerRepository.findAll();
 		for (Manufacturer m : lstManu) {
@@ -27,6 +28,7 @@ public class ManufacturerService {
 		return lstManu;
 	}
 
+	@Override
 	public Manufacturer findManufactureById(int id) {
 		Manufacturer manu = manufacturerRepository.findOne(id);
 		if (manu != null) {
@@ -37,31 +39,36 @@ public class ManufacturerService {
 		return manu;
 	}
 
+	@Override
 	public Manufacturer addManufacture(Manufacturer manu) {
 		return manufacturerRepository.save(manu);
 	}
 
-	public boolean updateManufacture(int id, String name, String detail) {
+	@Override
+	public Manufacturer updateManufacture(int id, String name, String detail) {
 		Manufacturer updateManu = manufacturerRepository.findOne(id);
 		if (updateManu != null) {
 			updateManu.setManufacturerName(name);
 			updateManu.setManufacurerDetails(detail);
 			manufacturerRepository.saveAndFlush(updateManu);
 			log.info("******Update nhà sản xuất thành công! " + updateManu.toString());
-			return true;
 		} else {
 			log.error("@.@________Hahuhu!!!Khong co nha san xuat de ghi de______@.@");
-			return false;
 		}
+		return updateManu;
 	}
 
-	public void deleteManufacture(int id) {
+	@Override
+	public boolean deleteManufacture(int id) {
 		Manufacturer deleteManu = manufacturerRepository.findOne(id);
 		if (deleteManu != null) {
 			manufacturerRepository.delete(id);
 			log.info("Xóa nhà sản xuất " + deleteManu.getManufacturerName() + " thành công!!!");
+			return true;
 		} else {
 			log.error("@.@_________<< Không xóa được nhé! Đừng cố quá >>_________@.@");
+
+			return false;
 		}
 
 	}

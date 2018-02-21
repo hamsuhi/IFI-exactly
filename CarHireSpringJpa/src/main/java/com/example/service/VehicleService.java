@@ -8,18 +8,20 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.iservice.IVehicleServcie;
 import com.example.model.Model;
 import com.example.model.Vehicle;
 import com.example.model.VehicleCategory;
 import com.example.repository.IVehicleRepository;
 
 @Service
-public class VehicleService {
+public class VehicleService implements IVehicleServcie{
 	private static final Logger log = LogManager.getLogger(VehicleService.class);
 
 	@Autowired
 	private IVehicleRepository vehicleRepository;
 
+	@Override
 	public List<Vehicle> findAllVehicle() {
 		List<Vehicle> lst = vehicleRepository.findAll();
 		for (Vehicle v : lst) {
@@ -28,6 +30,7 @@ public class VehicleService {
 		return lst;
 	}
 
+	@Override
 	public Vehicle findVehicleById(int id) {
 		Vehicle vehicle = vehicleRepository.findOne(id);
 		if(vehicle!=null) {
@@ -38,6 +41,7 @@ public class VehicleService {
 		return vehicle;
 	}
 
+	@Override
 	public Vehicle addVehicle(String currentMileage, Date dailyMotDue, String engineSize, Model model,
 			VehicleCategory vehicleCategory) {
 		Vehicle v = new  Vehicle(currentMileage,dailyMotDue,engineSize,model, vehicleCategory);
@@ -46,7 +50,8 @@ public class VehicleService {
 		return v;
 	}
 
-	public void updateVehicle(int id, String currentMileage, Date dailyMotDue, String engineSize, Model model,
+	@Override
+	public boolean updateVehicle(int id, String currentMileage, Date dailyMotDue, String engineSize, Model model,
 			VehicleCategory vehicleCategory) {
 		Vehicle update = vehicleRepository.findOne(id);
 		if (update != null) {
@@ -57,19 +62,25 @@ public class VehicleService {
 			update.setVehicleCategory(vehicleCategory);
 			vehicleRepository.saveAndFlush(update);
 			log.info("****UPDATE vehicle " + update.toString() + " succedd!****");
+			return true;
 		} else {
 			log.info("@.@_________Don't update vehicle!________@.@");
+			return false;
 		}
 	}
 
-	public void deleteVehicle(int id) {
+	@Override
+	public boolean deleteVehicle(int id) {
 		Vehicle v = vehicleRepository.findOne(id);
 		if (v != null) {
 			vehicleRepository.delete(id);
 			log.info("****Delete succedd!*****");
+			return true;
 		} else {
 			log.info("@.@___________Failed delete Vehicle_______@.@");
+			return false;
 		}
 	}
+	
 
 }

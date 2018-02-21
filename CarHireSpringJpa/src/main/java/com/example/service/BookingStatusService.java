@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.iservice.IBookingStatusService;
 import com.example.model.BookingStatus;
 import com.example.repository.IBookingStatusRepository;
 
@@ -20,12 +21,13 @@ import com.example.repository.IBookingStatusRepository;
  *
  */
 @Service
-public class BookingStatusService {
+public class BookingStatusService implements IBookingStatusService {
 	private static final Logger log = LogManager.getLogger(BookingStatusService.class);
 
 	@Autowired
 	private IBookingStatusRepository bookingStatusRepository;
-
+	
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<BookingStatus> findAllBookingStatus() {
 		List<BookingStatus> lst = bookingStatusRepository.findAll();
@@ -35,6 +37,7 @@ public class BookingStatusService {
 		return lst;
 	}
 
+	@Override
 	public BookingStatus findBookingStatusById(int id) {
 		BookingStatus book = bookingStatusRepository.findOne(id);
 		if (book != null) {
@@ -45,32 +48,38 @@ public class BookingStatusService {
 		return book;
 	}
 
+	@Override
 	public BookingStatus addBookingStatus(BookingStatus book) {
 		BookingStatus b = bookingStatusRepository.save(book);
 		log.info("*** Add Booking Status succedd!!" + b.toString());
 		return b;
 	}
 
-	public void updateBookingStatus(int id,String bookingStatusDescription) {
+	@Override
+	public boolean updateBookingStatus(int id,String bookingStatusDescription) {
 		BookingStatus b = bookingStatusRepository.findOne(id);
 		if (b != null) {
 			b.setBookingStatusDescription(bookingStatusDescription);
 			bookingStatusRepository.saveAndFlush(b);
 			log.info("****UPDATE Booking Status succed!" + b.toString());
+			return true;
 		} else {
 			log.info("@.@__________Don't Update Booking Status!____@.@");
+			return false;
 		}
 
 	}
 
-	public void deleteBookingStatus(int id) {
+	@Override
+	public boolean deleteBookingStatus(int id) {
 		BookingStatus b = bookingStatusRepository.findOne(id);
 		if (b != null) {
 			bookingStatusRepository.delete(id);
 			log.info("******Delete Booking Status succedđ!!!*****");
+			return true;
 		} else {
 			log.error("@.@____________Don't delete Booking Status!______@.@");
-			;
+			return false;
 		}
 
 	}

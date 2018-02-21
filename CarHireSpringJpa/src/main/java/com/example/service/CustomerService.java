@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.iservice.ICustomerService;
 import com.example.model.Custromer;
 import com.example.repository.ICustomerRepository;
 
@@ -19,12 +20,13 @@ import com.example.repository.ICustomerRepository;
  * 
  */
 @Service
-public class CustomerService {
+public class CustomerService implements ICustomerService{
 	private Logger log = LogManager.getLogger(CustomerService.class);
 
 	@Autowired
 	private ICustomerRepository customerRepository;
 
+	@Override
 	public List<Custromer> findAllCustome() {
 		List<Custromer> lst = customerRepository.findAll();
 		for (Custromer c : lst) {
@@ -33,6 +35,7 @@ public class CustomerService {
 		return lst;
 	}
 
+	@Override
 	public Custromer findCustomerById(int id) {
 		Custromer c = customerRepository.findOne(id);
 		if(c!=null) {
@@ -43,13 +46,15 @@ public class CustomerService {
 		return c;
 	}
 
+	@Override
 	public Custromer addCustomer(Custromer customer) {
 		Custromer c = customerRepository.save(customer);
 		log.info("****Add Customer succedd! " + c.toString());
 		return c;
 	}
 
-	public void updtateCustomer(int id, String addressLine1, String country, String customerName, String emailAddress,
+	@Override
+	public boolean updtateCustomer(int id, String addressLine1, String country, String customerName, String emailAddress,
 			String gendder, String phoneNumber, String town) {
 		Custromer c = customerRepository.findOne(id);
 		if (c != null) {
@@ -67,18 +72,23 @@ public class CustomerService {
 			c.setTown(town);
 			customerRepository.saveAndFlush(c);
 			log.info("****Update customer scceed!!! " + c.toString());
+			return true;
 		} else {
 			log.error("@.@_________Update customer failed!________@.@");
+			return false;
 		}
 	}
 
-	public void deleteCustomer(int id) {
+	@Override
+	public boolean deleteCustomer(int id) {
 		Custromer c = customerRepository.findOne(id);
 		if (c != null) {
 			customerRepository.delete(id);
 			log.info("****Delete customer succedd!  *****");
+			return true;
 		} else {
 			log.error("@.@_________Delete customer failed!_______@.@");
+			return false;
 		}
 	}
 }

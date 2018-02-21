@@ -1,5 +1,8 @@
 package com.example.controller;
 
+/*
+ * Lop cha: Model, Vehicle, Booking
+ */
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -10,6 +13,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.iservice.IBookingService;
+import com.example.iservice.IBookingStatusService;
+import com.example.iservice.ICustomerService;
+import com.example.iservice.IManufactureService;
+import com.example.iservice.IModelService;
+import com.example.iservice.IVehicleCatogoryService;
+import com.example.iservice.IVehicleServcie;
 import com.example.model.Booking;
 import com.example.model.BookingStatus;
 import com.example.model.Custromer;
@@ -32,24 +42,24 @@ public class MyController implements CommandLineRunner {
 	private static final Logger log = LogManager.getLogger(MyController.class);
 
 	@Autowired
-	private ManufacturerService manufactureService;
+	private IManufactureService manufactureService;
 
 	@Autowired
-	private ModelService modelService;
+	private IModelService modelService;
 
 	@Autowired
-	private VehicleCategoryService vehiclecategoryService;
+	private IVehicleCatogoryService vehiclecategoryService;
 	@Autowired
-	private VehicleService vehicleService;
+	private IVehicleServcie vehicleService;
 
 	@Autowired
-	private CustomerService customerService;
+	private ICustomerService customerService;
 
 	@Autowired
-	private BookingService bookingService;
+	private IBookingService bookingService;
 
 	@Autowired
-	private BookingStatusService bookingStatusService;
+	private IBookingStatusService bookingStatusService;
 
 	@Transactional
 	@Override
@@ -80,7 +90,7 @@ public class MyController implements CommandLineRunner {
 		vehiclecategoryService.deleteModel(0);
 		vehiclecategoryService.findByIdVehicleCategory(1);
 		log.info("_______________________________4. Lớp Vehicle__________________________________");
-		Vehicle v1 =vehicleService.addVehicle("60km/h", new Date("10/10/2017"), "50Mhz", m1, vc1);
+		Vehicle v1 = vehicleService.addVehicle("60km/h", new Date("10/10/2017"), "50Mhz", m1, vc1);
 		v1.toString();
 		vehicleService.findAllVehicle();
 		vehicleService.updateVehicle(2, "80km/h", new Date("30/01/2018"), "80Mhz", m1, vc1);
@@ -99,17 +109,17 @@ public class MyController implements CommandLineRunner {
 		BookingStatus bs1 = new BookingStatus("Khach hang dat lich som nhat trong thang: 03/01/1018");
 		bookingStatusService.addBookingStatus(bs1);
 		bookingStatusService.findAllBookingStatus();
-		bookingStatusService.updateBookingStatus(1,"Dat lich ngay 02/03/2018");
+		bookingStatusService.updateBookingStatus(1, "Dat lich ngay 02/03/2018");
 		bookingStatusService.deleteBookingStatus(0);
 		bookingStatusService.findBookingStatusById(1);
 		log.info("_______________________________7. Lớp Booking__________________________________");
-		Booking b1 = new Booking("Yes",new Date("20/11/2017"),new Date("29/11/2017"),"2016",bs1,c1,v1);
+		Booking b1 = new Booking("Yes", new Date("20/11/2017"), new Date("29/11/2017"), "2016", bs1, c1, v1);
 		bookingService.addBooking(b1);
 		bookingService.findAllBooking();
-		bookingService.updateBooking(1,bs1);
+		bookingService.updateBooking(1, bs1);
 		bookingService.delete(1);
 		bookingService.findBookingById(1);
-	
+
 		// log.info("_______________________________Lớp
 		// Model__________________________________");
 		// Manufacturer m0 = new Manufacturer("Japan", "Sản xuất tại Nhật Bản @.@");

@@ -10,17 +10,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.iservice.IModelService;
 import com.example.model.Manufacturer;
 import com.example.model.Model;
 import com.example.repository.IModelRepository;
 @Transactional(rollbackFor = Exception.class)
 @Resource
 @Service
-public class ModelService {
+public class ModelService implements IModelService{
 	private static final Logger log = LogManager.getLogger(Model.class);
 	@Autowired
 	private IModelRepository modelRepository;
 
+	@Override
 	//@SuppressWarnings("unchecked")
 	public List<Model> findAllModel() {
 		List<Model> lstModel = modelRepository.findAll();
@@ -30,6 +32,7 @@ public class ModelService {
 		return lstModel;
 	}
 
+	@Override
 	public Model findModelById(int id) {
 		Model model = modelRepository.findOne(id);
 		if(model!=null) {
@@ -40,12 +43,14 @@ public class ModelService {
 		return model;		
 	}
 
+	@Override
 	public Model addModel(String dailyHireRate, String modelName, Manufacturer manufacturer) {
 		Model md = new Model(dailyHireRate,modelName,manufacturer);
 			return modelRepository.save(md);		
 	}
 
-	public void updateModel(int id,String dailyHireRate,String modelName,Manufacturer manufacturer ) {
+	@Override
+	public boolean updateModel(int id,String dailyHireRate,String modelName,Manufacturer manufacturer ) {
 		Model update = modelRepository.findOne(id);
 		if (update != null) {
 			update.setModelName(dailyHireRate);
@@ -53,18 +58,23 @@ public class ModelService {
 			update.setManufacturer(manufacturer);
 			modelRepository.saveAndFlush(update);
 			log.info("****Update MODEL thành công rực rỡ! " + update.toString());
+			return true;
 		} else {
 			log.error("@.@__________Help me! Tôi không update được! ___________@.@");
+			return false;
 		}
 	}
 
-	public void deleteModel(int id) {
+	@Override
+	public boolean deleteModel(int id) {
 		Model model = modelRepository.findOne(id);
 		if (model != null) {
 			modelRepository.delete(id);
 			log.info("*****Delete MODEL have name is " + model.getModelName() + " succedd!******");
+		return true;
 		} else {
 			log.error("@.@________Delete Model false! Don't model ID. Let you add!!!_______@.@");
+		return false;
 		}
 	}
 
