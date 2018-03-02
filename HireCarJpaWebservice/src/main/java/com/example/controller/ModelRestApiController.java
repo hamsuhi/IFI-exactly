@@ -67,7 +67,8 @@ public class ModelRestApiController {
 		boolean md = modelService.updateModel(id, model.getDailyHireRate(), model.getModelName(),
 				manu);
 		if (md) {
-			return new ResponseEntity<Model>(HttpStatus.OK);
+			Model modell = modelRepository.getOne(id);
+			return new ResponseEntity<Model>(modell,HttpStatus.OK);
 		}
 		return null;
 	}
