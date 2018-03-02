@@ -50,7 +50,7 @@ public class ModelRestApiController {
 	}
 
 	@PostMapping(value = "/model")
-	public ResponseEntity<Model> addModel(@RequestParam(value="manufacturer_code", required=true)int id,String dailyHireRate, String modelName, HttpServletRequest request, UriComponentsBuilder ucBuilder) {
+	public ResponseEntity<Model> addModel(@RequestParam(value="manufacturer_code", required=true)int id,@RequestParam(value="daily_hire_rate")String dailyHireRate,@RequestParam(value="model_name") String modelName, HttpServletRequest request, UriComponentsBuilder ucBuilder) {
 		Manufacturer manu = manufacturerService.findManufactureById(id);
 		Model model = modelService.addModel(dailyHireRate, modelName, manu);
 		HttpHeaders header = new HttpHeaders();
