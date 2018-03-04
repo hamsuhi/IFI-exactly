@@ -1,5 +1,7 @@
 package com.example.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +27,7 @@ import com.example.service.VehicleService;
 @RestController
 @RequestMapping("/api")
 public class VehicleApiRestController {
-
+	private static final SimpleDateFormat formatDate = new SimpleDateFormat("dd/mm/yyyy");
 	@Autowired
 	private VehicleService vehicleService;
 
@@ -56,30 +58,32 @@ public class VehicleApiRestController {
 		return new ResponseEntity<Vehicle>(vehicle, HttpStatus.NO_CONTENT);
 	}
 
-	@RequestMapping(value = "/vehicle/{id}", method = RequestMethod.POST)
-	private ResponseEntity<?> addVehicle(@PathVariable int id, @RequestParam(value = "vehicle_category_code") int vcId,
-			@RequestParam(value = "model_code") int modelId,
-			@RequestParam(value = "current_mileage") String currentMileage,
-			@RequestParam(value = "daily_mot_due") Date dailyMotDue, String engineSize,
-			UriComponentsBuilder ucBuilder) {
-		Model model = modelService.findModelById(modelId);
-		VehicleCategory vc = vehicleCategoryService.findByIdVehicleCategory(vcId);
-		Vehicle test = vehicleService.addVehicle(currentMileage, dailyMotDue, engineSize, model, vc);
+	@RequestMapping(value = "/vehicle/", method = RequestMethod.POST)
+	private ResponseEntity<?> addVehicle(String vehicleCategoryCode, String modelCode, String currentMileage,
+			String dailyMotDue, String engineSize, UriComponentsBuilder ucBuilder) throws ParseException {
+		
+		Model model = modelService.findModelById(Integer.parseInt(modelCode));
+		VehicleCategory vc = vehicleCategoryService.findByIdVehicleCategory(Integer.parseInt(vehicleCategoryCode));
+		Vehicle test = vehicleService.addVehicle(currentMileage, formatDate.parse(dailyMotDue), engineSize, model, vc);
+		if (test == null) {
+			return new ResponseEntity<Void>(HttpStatus.CONFLICT);
+		}
 		HttpHeaders header = new HttpHeaders();
 		header.setLocation(ucBuilder.path("/api/vehicle/{id}").buildAndExpand(test.getRegNumber()).toUri());
-		return new ResponseEntity<Vehicle>(test, HttpStatus.OK);
+		return new ResponseEntity<Void>(header, HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "/vehicle/{id}", method = RequestMethod.PUT)
-	private ResponseEntity<?> updateVehicle(@PathVariable int id,
-			@RequestParam(value = "vehicle_category_code") int vcId, @RequestParam(value = "model_code") int modelId,
-			String currentMileage, Date dailyMotDue, String engineSize) {
-		Model model = modelService.findModelById(modelId);
-		VehicleCategory vc = vehicleCategoryService.findByIdVehicleCategory(vcId);
+	@RequestMapping(value = "/vehicle/{id}", method = RequestMethod.POST)
+	private ResponseEntity<?> updateVehicle(@PathVariable int id, String vehicleCategoryCode, String modelCode,
+			String currentMileage, String dailyMotDue, String engineSize) throws ParseException {
 
-		boolean test = vehicleService.updateVehicle(id, currentMileage, dailyMotDue, engineSize, model, vc);
-		if (test == true) {
-			Vehicle vehicle = vehicleRepository.getOne(id);
+		Model model = modelService.findModelById(Integer.parseInt(modelCode));
+		VehicleCategory vc = vehicleCategoryService.findByIdVehicleCategory(Integer.parseInt(vehicleCategoryCode));
+		Vehicle vehicle = vehicleRepository.getOne(id);
+		boolean test = vehicleService.updateVehicle(id, currentMileage, formatDate.parse(dailyMotDue), engineSize,
+				model, vc);
+		
+		if (test == true) {	
 			return new ResponseEntity<Vehicle>(vehicle, HttpStatus.OK);
 		}
 		return new ResponseEntity<Vehicle>(HttpStatus.NOT_FOUND);
@@ -94,4 +98,3 @@ public class VehicleApiRestController {
 	}
 
 }
-

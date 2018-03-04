@@ -1,0 +1,4 @@
+Webservice:
+-Update truyen duoc lên           params || raw 
+Khi dung form-data, ALL KDL truyen tham so vao  la "STRING" => ep kieu
+-Add truyen duoc len form-data || params || raw || x-www-form

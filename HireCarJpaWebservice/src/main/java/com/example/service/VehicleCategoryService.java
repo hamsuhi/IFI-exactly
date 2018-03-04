@@ -29,12 +29,6 @@ public class VehicleCategoryService implements IVehicleCatogoryService {
 	@Override
 	public List<VehicleCategory> findAllVehicleCategory() {
 		List<VehicleCategory> lst = vehicleCategoryRepository.findAll();
-		if (lst.isEmpty() || lst == null) {
-			log.info("List Empty");
-		}
-		for (VehicleCategory v : lst) {
-			v.toString();
-		}
 		return lst;
 	}
 
@@ -73,16 +67,12 @@ public class VehicleCategoryService implements IVehicleCatogoryService {
 	}
 
 	@Override
-	public boolean deleteModel(int id) {
-		VehicleCategory v = vehicleCategoryRepository.findOne(id);
-		if (v != null) {
+	public boolean deleteVehicleCategory(int id) {
+		if (vehicleCategoryRepository.exists(id)) {
 			vehicleCategoryRepository.delete(id);
-			log.info("Delete Vehicle Category " + v.getVehicleCategoryCode() + "succedd!");
 			return true;
-		} else {
-			log.error("@.@________Delete  Vehicle Category failed");
+		} 
 			return false;
-		}
 	}
 
 }

@@ -29,7 +29,7 @@ public class Manufacturer implements Serializable,Comparator<Manufacturer>, Comp
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="manufacturer_code")
+	@Column(name="manufacturer_code", unique = true)
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int manufacturerCode;
 
@@ -41,13 +41,19 @@ public class Manufacturer implements Serializable,Comparator<Manufacturer>, Comp
 
 	//bi-directional many-to-one association to Model
 	@OneToMany(mappedBy="manufacturer", fetch=FetchType.EAGER)
-	@JsonIgnore
+	@JsonBackReference
 	private Set<Model> models;
 
 	public Manufacturer() {
 	}
 	
 	public Manufacturer(String manufacturerName, String manufacurerDetails) {
+		this.manufacturerName = manufacturerName;
+		this.manufacurerDetails = manufacurerDetails;
+	}
+
+	public Manufacturer(int manufacturerCode, String manufacturerName, String manufacurerDetails) {
+		this.manufacturerCode = manufacturerCode;
 		this.manufacturerName = manufacturerName;
 		this.manufacurerDetails = manufacurerDetails;
 	}
@@ -115,17 +121,6 @@ public class Manufacturer implements Serializable,Comparator<Manufacturer>, Comp
 		return o1.manufacturerCode - o2.manufacturerCode;
 	}
 	
-//	public void enterInfo() {
-//		Scanner sc = new Scanner(System.in);
-//		System.out.println("Name manufacturer: ");
-//		manufacturerName = sc.nextLine();
-//		System.out.println("Detail manufacturer: ");
-//		manufacurerDetails = sc.nextLine();	
-//	}
-//
-//	public void showInfo() {
-//		System.out.println("Name manufacturer: "+ this.manufacturerName);
-//		System.out.println("Detail manufacturer: "+this.manufacurerDetails);		
-//	}
+
 
 }

@@ -2,6 +2,12 @@ package com.example.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonFormatTypes;
+
 import java.util.Date;
 import java.util.Set;
 
@@ -25,6 +31,7 @@ public class Vehicle implements Serializable {
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="daily_mot_due")
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-mm-yyyy" )
 	private Date dailyMotDue;
 
 	@Column(name="engine_size")
@@ -32,6 +39,7 @@ public class Vehicle implements Serializable {
 
 	//bi-directional many-to-one association to Booking
 	@OneToMany(mappedBy="vehicle", fetch=FetchType.EAGER)
+	@JsonBackReference
 	private Set<Booking> bookings;
 
 	//bi-directional many-to-one association to Model

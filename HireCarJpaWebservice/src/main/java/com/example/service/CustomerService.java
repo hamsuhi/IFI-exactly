@@ -29,9 +29,6 @@ public class CustomerService implements ICustomerService {
 	@Override
 	public List<Custromer> findAllCustome() {
 		List<Custromer> lst = customerRepository.findAll();
-		for (Custromer c : lst) {
-			c.toString();
-		}
 		return lst;
 	}
 

@@ -22,56 +22,53 @@ import com.example.model.BookingStatus;
 import com.example.service.BookingStatusService;
 
 @RestController
-@RequestMapping(value="/api")
+@RequestMapping(value = "/api")
 public class BookingStatusApiRestController {
 	@Autowired
 	private BookingStatusService bookingStatusService;
 
-	@GetMapping(value="/bookingstatus/")
+	@GetMapping(value = "/bookingstatus")
 	public ResponseEntity<List<BookingStatus>> findAllBookingStatus() {
 		List<BookingStatus> lst = bookingStatusService.findAllBookingStatus();
-		if(lst.isEmpty()) {
-			return new ResponseEntity<List<BookingStatus>>(lst, HttpStatus.NO_CONTENT); 
+		if (lst.isEmpty()) {
+			return new ResponseEntity<List<BookingStatus>>(lst, HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<List<BookingStatus>>(lst, HttpStatus.OK);
 	}
 
-	@GetMapping(value="/bookingstatus/{id}", produces=MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/bookingstatus/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<BookingStatus> findBookingStatusById(@PathVariable("id") int id) {
 		BookingStatus book = bookingStatusService.findBookingStatusById(id);
 		if (book == null) {
 			return new ResponseEntity<BookingStatus>(HttpStatus.NOT_FOUND);
-		} 
+		}
 		return new ResponseEntity<BookingStatus>(book, HttpStatus.OK);
 	}
 
-	@PostMapping(value="/bookingstatus/")
-	public ResponseEntity<?> addBookingStatus(@RequestBody BookingStatus book, UriComponentsBuilder ucBuilder) {
-		if (bookingStatusService.addBookingStatus(book)) {
-			return new ResponseEntity<BookingStatus>(book, HttpStatus.ACCEPTED);
-		}
-		HttpHeaders header = new HttpHeaders();
-		header.setLocation(ucBuilder.path("/api/bookingstatus/{id}").buildAndExpand(book.getBookingStatusCode()).toUri());
-		return  new ResponseEntity<BookingStatus>(header, HttpStatus.CONFLICT);
-	}
-
-	@PutMapping(value="/bookingstatus/{id}")
-	public ResponseEntity<?> updateBookingStatus(@PathVariable("id") int id,@RequestParam("bookingStatusDescription") String bookingStatusDescription) {
+	@PostMapping(value = "/bookingstatus")
+	public ResponseEntity<?> addBookingStatus(String bookingStatusDescription, UriComponentsBuilder ucBulder) {
 		BookingStatus book = new BookingStatus(bookingStatusDescription);
-		if(bookingStatusService.updateBookingStatus(id, bookingStatusDescription)== false) {
-			return new ResponseEntity<BookingStatus>(HttpStatus.NO_CONTENT);
+		if (bookingStatusService.addBookingStatus(book)) {
+			return new ResponseEntity<Void>(HttpStatus.CONFLICT);
 		}
-		return new ResponseEntity<BookingStatus>(book,HttpStatus.OK);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setLocation(ucBulder.path("/api/bookingstatus/{id}").buildAndExpand(book.getBookingStatusCode()).toUri());
+		return new ResponseEntity<Void>(headers, HttpStatus.OK);
+
 	}
 
+	@PostMapping(value = "/bookingstatus/{id}")
+	public ResponseEntity<?> updateBookingStatus(@PathVariable("id") String id, String bookingStatusDescription) {
+		BookingStatus book = new BookingStatus(bookingStatusDescription);
+		bookingStatusService.updateBookingStatus(Integer.parseInt(id), bookingStatusDescription);
+		return new ResponseEntity<BookingStatus>(book, HttpStatus.OK);
+	}
 
-	@DeleteMapping(value="/bookingstatus/{id}")
+	@DeleteMapping(value = "/bookingstatus/{id}")
 	public ResponseEntity<?> deleteBookingStatus(@PathVariable("id") int id) {
-		if(bookingStatusService.deleteBookingStatus(id)) {
+		if (bookingStatusService.deleteBookingStatus(id)) {
 			return new ResponseEntity<BookingStatus>(HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<BookingStatus>(HttpStatus.NOT_FOUND);
-
+	}
 }
-}
-

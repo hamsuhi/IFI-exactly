@@ -2,6 +2,9 @@ package com.example.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 
@@ -24,10 +27,12 @@ public class Booking implements Serializable {
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="date_from")
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
 	private Date dateFrom;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="date_to")
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy")
 	private Date dateTo;
 
 	@Column(name="payment_recieved_yn")
@@ -61,7 +66,7 @@ public class Booking implements Serializable {
 
 	public Booking(String confirmationLetterSentYn, Date dateFrom, Date dateTo, String paymentRecievedYn,
 			BookingStatus bookingStatus, Custromer custromer, Vehicle vehicle) {
-		super();
+
 		this.confirmationLetterSentYn = confirmationLetterSentYn;
 		this.dateFrom = dateFrom;
 		this.dateTo = dateTo;

@@ -32,12 +32,6 @@ public class VehicleService implements IVehicleServcie {
 	@Override
 	public List<Vehicle> findAllVehicle() {
 		List<Vehicle> lst = vehicleRepository.findAll();
-		if (lst.isEmpty()) {
-			log.error("List is empty");
-		} else {
-			for (Vehicle v : lst)
-				v.toString();
-		}
 		return lst;
 	}
 

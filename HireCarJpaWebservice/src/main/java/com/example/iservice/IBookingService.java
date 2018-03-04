@@ -34,14 +34,15 @@ public interface IBookingService {
 	 * @param book
 	 * @return
 	 */
-	Booking addBooking(Booking booking, BookingStatus bs, Custromer c, Vehicle v);
+	public Booking addBooking(String confirmationLetterSentYn, Date dateFrom, Date dateTo, String paymentRecievedYn,
+			BookingStatus bs, Custromer c, Vehicle v);
 
 	/**
 	 * @param id
 	 * @param bookingStatus
 	 * @return
 	 */
-	boolean updateBooking(int id, Booking booking, BookingStatus bookingStatus, Custromer custromer, Vehicle vehicle);
+	boolean updateBooking(int id, Booking booking, int bookingStatusId, int custromerId, int vehicleId);
 
 	/**
 	 * @param id

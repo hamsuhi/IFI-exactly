@@ -2,6 +2,9 @@ package com.example.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.util.Set;
 
 
@@ -24,6 +27,7 @@ public class BookingStatus implements Serializable {
 
 	//bi-directional many-to-one association to Booking
 	@OneToMany(mappedBy="bookingStatus", fetch=FetchType.EAGER)
+	@JsonBackReference
 	private Set<Booking> bookings;
 
 	public BookingStatus() {

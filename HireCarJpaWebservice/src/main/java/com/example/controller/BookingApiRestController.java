@@ -1,5 +1,8 @@
 package com.example.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +28,9 @@ import com.example.service.CustomerService;
 import com.example.service.VehicleService;
 
 @RestController
-@RequestMapping(value = "api")
+@RequestMapping(value = "/api")
 public class BookingApiRestController {
+	private static final SimpleDateFormat formatDate = new SimpleDateFormat("dd/mm/yyyy");
 	@Autowired
 	private BookingService bookingService;
 
@@ -40,7 +44,7 @@ public class BookingApiRestController {
 	private CustomerService customerService;
 
 	@RequestMapping(value = "/booking", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
-	private ResponseEntity<List<Booking>> getAllBooking() {
+	public ResponseEntity<List<Booking>> getAllBooking() {
 		List<Booking> book = bookingService.findAllBooking();
 		if (book.isEmpty()) {
 			return new ResponseEntity<List<Booking>>(HttpStatus.NOT_FOUND);
@@ -49,7 +53,7 @@ public class BookingApiRestController {
 	}
 
 	@RequestMapping(value = "/booking/{id}", method = RequestMethod.GET)
-	private ResponseEntity<?> getBookingById(@PathVariable int id) {
+	public ResponseEntity<?> getBookingById(@PathVariable int id) {
 		Booking book = bookingService.findBookingById(id);
 		if (book != null) {
 			return new ResponseEntity<Booking>(book, HttpStatus.OK);
@@ -58,38 +62,47 @@ public class BookingApiRestController {
 	}
 
 	@RequestMapping(value = "/booking", method = RequestMethod.POST)
-	private ResponseEntity<?> addBooking(@RequestParam(value = "booking_status_code") int idBs,
-			@RequestParam(value = "reg_number") int idV, @RequestParam(value = "customer_id") int idC, Booking booking,
-			UriComponentsBuilder ucBuilder) {
-		BookingStatus bookStatus = bookingStatusService.findBookingStatusById(idBs);
-		Vehicle vehicle = vehicleService.findVehicleById(idV);
-		Custromer customer = customerService.findCustomerById(idC);
-		Booking book = bookingService.addBooking(booking, bookStatus, customer, vehicle);
+	private ResponseEntity<?> addBooking(String confirmationLetterSentYn, String dateFrom, String dateTo,
+			String paymentRecievedYn, String bookingStatusCode, String customerId, String regNumber,
+			UriComponentsBuilder ucBuilder) throws ParseException {
+		BookingStatus bookStatus = bookingStatusService.findBookingStatusById(Integer.parseInt(bookingStatusCode));
+		Custromer customer = customerService.findCustomerById(Integer.parseInt(customerId));
+		Vehicle vehicle = vehicleService.findVehicleById(Integer.parseInt(regNumber));
+		Booking book = bookingService.addBooking(confirmationLetterSentYn, formatDate.parse(dateFrom),
+				formatDate.parse(dateTo), paymentRecievedYn, bookStatus, customer, vehicle);
+		if (book == null) {
+			return new ResponseEntity<Void>(HttpStatus.CONFLICT);
+		}
 		HttpHeaders header = new HttpHeaders();
-		header.setLocation(ucBuilder.path("/api/booking/{id}").buildAndExpand(booking.getBookingId()).toUri());
-		return new ResponseEntity<Booking>(header, HttpStatus.OK);
+		header.setLocation(ucBuilder.path("/api/booking/{id}").buildAndExpand(book.getBookingId()).toUri());
+		return new ResponseEntity<Void>(header, HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "/booking/{id}", method = RequestMethod.PUT)
-	private ResponseEntity<?> updateBooking(@PathVariable("id") int id,
-			@RequestParam(value = "booking_status_code") int idBs, @RequestParam(value = ("reg_number")) int idV,
-			@RequestParam(value = "customer_id") int idC, @ModelAttribute("booking") Booking booking) {
-		BookingStatus bookStatus = bookingStatusService.findBookingStatusById(idBs);
-		Vehicle vehicle = vehicleService.findVehicleById(idV);
-		Custromer customer = customerService.findCustomerById(idC);
-		boolean book = bookingService.updateBooking(id, booking, bookStatus, customer, vehicle);
+	@RequestMapping(value = "/booking/{id}", method = RequestMethod.POST)
+	private ResponseEntity<?> updateBooking(@PathVariable("id") int id, String confirmationLetterSentYn,
+			String dateFrom, String dateTo, String paymentRecievedYn, String bookingStatusCode, String customerId,
+			String regNumber) throws ParseException {
+
+		BookingStatus bookStatus = bookingStatusService.findBookingStatusById(Integer.parseInt(bookingStatusCode));
+		Custromer customer = customerService.findCustomerById(Integer.parseInt(customerId));
+		Vehicle vehicle = vehicleService.findVehicleById(Integer.parseInt(regNumber));
+	
+		Booking booking = new Booking(confirmationLetterSentYn, formatDate.parse(dateFrom), formatDate.parse(dateTo),
+				paymentRecievedYn, bookStatus, customer, vehicle);
+		boolean book = bookingService.updateBooking(id, booking, Integer.parseInt(bookingStatusCode),
+				Integer.parseInt(customerId), Integer.parseInt(regNumber));
 		if (book == false) {
 			return new ResponseEntity<Booking>(HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<Booking>(booking, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = " /booking/{id}", method = RequestMethod.DELETE)
-	private ResponseEntity<?> deleteBooking(@PathVariable int id) {
-		if (bookingService.delete(id)) {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	@RequestMapping(value = "/booking/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deleteBooking(@PathVariable("id") int id) {
+		if (bookingService.delete(id) == false) {
+			return new ResponseEntity<BookingService>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<BookingService>(HttpStatus.NO_CONTENT);
 	}
 
 }

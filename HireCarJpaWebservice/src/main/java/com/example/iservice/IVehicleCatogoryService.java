@@ -43,6 +43,6 @@ public interface IVehicleCatogoryService {
 	 * @param id
 	 * @return
 	 */
-	boolean deleteModel(int id);
+	boolean deleteVehicleCategory(int id);
 
 }

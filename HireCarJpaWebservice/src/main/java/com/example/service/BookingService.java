@@ -55,8 +55,9 @@ public class BookingService implements IBookingService {
 	}
 
 	@Override
-	public Booking addBooking(Booking booking, BookingStatus bs, Custromer c, Vehicle v) {
-		Booking b = bookingRepository.save(booking);
+	public Booking addBooking(String confirmationLetterSentYn, Date dateFrom, Date dateTo, String paymentRecievedYn,
+			BookingStatus bs, Custromer c, Vehicle v) {
+		Booking booking = new Booking(confirmationLetterSentYn, dateFrom, dateTo, paymentRecievedYn, bs, c, v);
 		boolean existBookingStatus = bookingStatusRepository.exists(bs.getBookingStatusCode());
 		boolean existCustomer = customerRepository.exists(c.getCustomerId());
 		boolean existVehicle = vehicleRepository.exists(v.getRegNumber());
@@ -68,33 +69,37 @@ public class BookingService implements IBookingService {
 		// b.setBookingStatus(bookingStatus);
 		// b.setCustromer(custromer);
 		// b.setVehicle(vehicle);
-		if (bookingRepository.exists(b.getBookingId()) || !existBookingStatus || !existCustomer || !existVehicle) {
-			log.info("Ko them book: " + b.getConfirmationLetterSentYn());
+		if (bookingRepository.exists(booking.getBookingId()) || !existBookingStatus || !existCustomer || !existVehicle) {
+			log.info("Ko them book: " + booking.getConfirmationLetterSentYn());
+
 		}
-		bookingRepository.save(b);
-		log.info("Thêm book thành công: " + b.toString());
-		return b;
+		bookingRepository.save(booking);
+		log.info("Thêm book thành công: " + booking.toString());
+		return booking;
 	}
 
 	@Override
-	public boolean updateBooking(int id, Booking booking, BookingStatus bookingStatus, Custromer custromer, Vehicle vehicle) {
+	public boolean updateBooking(int id, Booking booking, int bookingStatusId, int custromerId, int vehicleId) {
 		Booking b = bookingRepository.findOne(id);
-		boolean existBookingStatus = bookingStatusRepository.exists(bookingStatus.getBookingStatusCode());
-		boolean existCustomer = customerRepository.exists(custromer.getCustomerId());
-		boolean existVehicle = vehicleRepository.exists(vehicle.getRegNumber());
+		BookingStatus bs = bookingStatusRepository.getOne(bookingStatusId);
+		Custromer c = customerRepository.getOne(custromerId);
+		Vehicle v = vehicleRepository.getOne(vehicleId);
+		boolean existBookingStatus = bookingStatusRepository.exists(bookingStatusId);
+		boolean existCustomer = customerRepository.exists(custromerId);
+		boolean existVehicle = vehicleRepository.exists(vehicleId);
 		if (b != null) {
 			b.setConfirmationLetterSentYn(booking.getConfirmationLetterSentYn());
 			b.setDateFrom(booking.getDateFrom());
 			b.setDateTo(booking.getDateTo());
 			b.setPaymentRecievedYn(booking.getPaymentRecievedYn());
-			b.setBookingStatus(bookingStatus);
-			b.setCustromer(custromer);
-			b.setVehicle(vehicle);
-			if(existBookingStatus || existCustomer || existVehicle) {
+			b.setBookingStatus(bs);
+			b.setCustromer(c);
+			b.setVehicle(v);
+			if (existBookingStatus || existCustomer || existVehicle) {
 				bookingRepository.saveAndFlush(b);
 				log.info("*****Update book succedd!!! " + b.toString());
 				return true;
-			}else {
+			} else {
 				log.info("@.@______________Update BOOKING failed!________@.@");
 				return false;
 			}
@@ -108,11 +113,8 @@ public class BookingService implements IBookingService {
 		Booking b = bookingRepository.findOne(id);
 		if (b != null) {
 			bookingRepository.delete(b);
-			log.info("Xóa thành công! ");
 			return true;
-		} else {
-			log.error("Don't delete Booking!");
-			return false;
 		}
+		return false;
 	}
 }

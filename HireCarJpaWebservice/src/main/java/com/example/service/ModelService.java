@@ -37,13 +37,6 @@ public class ModelService implements IModelService {
 	// @SuppressWarnings("unchecked")
 	public List<Model> findAllModel() {
 		List<Model> lstModel = modelRepository.findAll();
-		if (lstModel.isEmpty()) {
-			log.info("List Empty!");
-		} else {
-			for (Model m : lstModel) {
-				m.toString();
-			}
-		}
 		return lstModel;
 	}
 
@@ -75,13 +68,14 @@ public class ModelService implements IModelService {
 	 * (!=null) --> saveAndFlush Model Th2: idModel == null => tao moi model
 	 */
 	@Override
-	public boolean updateModel(int id, String dailyHireRate, String modelName, Manufacturer manufacturer) {
+	public boolean updateModel(int id,int idManu, String dailyHireRate, String modelName) {
+		Manufacturer manu = manufacturerRepository.getOne(idManu);
 		Model update = this.findModelById(id);
-		boolean manuExis = manufacturerService.findManufactureById(manufacturer.getManufacturerCode()) != null;
+		boolean manuExis = manufacturerService.findManufactureById(manu.getManufacturerCode()) != null;
 		if (update != null) {
 			update.setModelName(dailyHireRate);
 			update.setDailyHireRate(modelName);
-			update.setManufacturer(manufacturer);
+			update.setManufacturer(manu);
 			//modelRepository.save(update);
 			if (manuExis) {
 				modelRepository.saveAndFlush(update);
@@ -97,7 +91,7 @@ public class ModelService implements IModelService {
 
 	@Override
 	public boolean deleteModel(int id) {
-		if (modelRepository.findOne(id) != null) {
+		if (modelRepository.exists(id)) {
 			modelRepository.delete(id);
 			return true;
 		} else {
@@ -105,9 +99,5 @@ public class ModelService implements IModelService {
 			return false;
 		}
 	}
-
-	// public boolean isModelExist(Model model) {
-	// return modelRepository.findByModelName(model.getModelName()) != null;
-	// }
 
 }

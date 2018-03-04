@@ -2,6 +2,9 @@ package com.example.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Set;
 
 
@@ -24,6 +27,7 @@ public class VehicleCategory implements Serializable {
 
 	//bi-directional many-to-one association to Vehicle
 	@OneToMany(mappedBy="vehicleCategory", fetch=FetchType.EAGER)
+	@JsonIgnore
 	private Set<Vehicle> vehicles;
 
 	public VehicleCategory() {
@@ -67,7 +71,6 @@ public class VehicleCategory implements Serializable {
 	public Vehicle removeVehicle(Vehicle vehicle) {
 		getVehicles().remove(vehicle);
 		vehicle.setVehicleCategory(null);
-
 		return vehicle;
 	}
 

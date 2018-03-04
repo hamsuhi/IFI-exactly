@@ -2,6 +2,9 @@ package com.example.model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.util.Set;
 
 /**
@@ -31,9 +34,23 @@ public class Model implements Serializable {
 
 	// bi-directional many-to-one association to Vehicle
 	@OneToMany(mappedBy = "model", fetch = FetchType.EAGER)
+	@JsonBackReference
 	private Set<Vehicle> vehicles;
 
 	public Model() {
+	}
+
+	public Model(int modelCode, String dailyHireRate, String modelName, Manufacturer manufacturer) {
+		this.modelCode = modelCode;
+		this.dailyHireRate = dailyHireRate;
+		this.modelName = modelName;
+		this.manufacturer = manufacturer;
+	}
+
+	public Model(int modelCode, String dailyHireRate, String modelName) {
+		this.modelCode = modelCode;
+		this.dailyHireRate = dailyHireRate;
+		this.modelName = modelName;
 	}
 
 	public Model(String dailyHireRate, String modelName, Manufacturer manufacturer) {

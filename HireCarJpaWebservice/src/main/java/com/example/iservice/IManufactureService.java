@@ -46,5 +46,4 @@ public interface IManufactureService {
 	 */
 	boolean deleteManufacture(int id);
 
-	boolean existManufacturer(int id);
 }

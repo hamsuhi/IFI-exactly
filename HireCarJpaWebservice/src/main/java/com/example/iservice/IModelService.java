@@ -41,9 +41,9 @@ public interface IModelService {
 	 * @param modelName
 	 * @param manufacturer
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	boolean updateModel(int id, String dailyHireRate, String modelName, Manufacturer manufacturer) throws Exception;
+	boolean updateModel(int id, int idManu, String dailyHireRate, String modelName) throws Exception;
 
 	/**
 	 * @param id

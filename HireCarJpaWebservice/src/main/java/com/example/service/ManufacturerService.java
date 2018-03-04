@@ -43,18 +43,18 @@ public class ManufacturerService implements IManufactureService {
 
 	@Override
 	public boolean addManufacture(Manufacturer manu) {
-		if (manufacturerRepository.exists(manu.getManufacturerCode())) {
+		// manufacturerRepository.exists(manu.getManufacturerCode())
+		if (manufacturerRepository.save(manu) == null) {
 			log.error("Unable to create. A User with name {} already exist" + manu.getManufacturerName());
 			return false;
 		}
-		manufacturerRepository.save(manu);
 		return true;
 	}
 
 	@Override
 	public boolean updateManufacture(Manufacturer manu) {
 		Manufacturer updateManu = manufacturerRepository.findOne(manu.getManufacturerCode());
-		if (updateManu != null) {
+		if (updateManu != null || this.exist(manu.getManufacturerCode())) {
 			updateManu.setManufacturerName(manu.getManufacturerName());
 			updateManu.setManufacurerDetails(manu.getManufacurerDetails());
 			manufacturerRepository.saveAndFlush(updateManu);
@@ -64,7 +64,6 @@ public class ManufacturerService implements IManufactureService {
 			log.error("@.@________Hahuhu!!!Khong co nha san xuat de ghi de______@.@");
 			return false;
 		}
-
 	}
 
 	@Override
@@ -83,7 +82,6 @@ public class ManufacturerService implements IManufactureService {
 
 	/**
 	 * Collectin được gọi ra qua hàm ghi đè @Comparable trong tầng Model
-	 *
 	 */
 	public void printListSortByName() {
 		log.info("\t \tHiển thị thông tin nhà san xuất sắp xếp theo tên: ");
@@ -106,15 +104,8 @@ public class ManufacturerService implements IManufactureService {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.example.iservice.IManufactureService#existManufacturer(int)
-	 */
-	@Override
-	public boolean existManufacturer(int id) {
-		boolean count = findManufactureById(id) != null;
-		return count ? true:false;
+	public boolean exist(int id) {
+		return manufacturerRepository.exists(id) ? true : false;
 	}
-
-
 
 }
