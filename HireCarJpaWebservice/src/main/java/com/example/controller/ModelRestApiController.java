@@ -78,11 +78,24 @@ public class ModelRestApiController {
 		header.setLocation(ucBuilder.path("/api/model/{id}").buildAndExpand(model.getModelCode()).toUri());
 		return new ResponseEntity<Void>(header, HttpStatus.OK);
 	}
+	
+	// add auto a manu from table model --> is being error
+	@PostMapping(value = "/modell///")
+	public ResponseEntity<?> addAutoManuByModel(String dailyHireRate, String modelName, String manufacturerName,
+			String manufacurerDetails, UriComponentsBuilder ucBuilder) {
+		Manufacturer manufacture = new Manufacturer(manufacturerName, manufacurerDetails);
+		manufacturerService.addManufacture(manufacture);
+		Model model = modelService.addModel(dailyHireRate, modelName, manufacture);
 
-	// update form-data --> lon nguoc
+		HttpHeaders header = new HttpHeaders();
+		header.setLocation(ucBuilder.path("/api/model/{id}").buildAndExpand(model.getModelCode()).toUri());
+		return new ResponseEntity<Void>(header, HttpStatus.OK);
+	}
+	
+	// update form-data 
 	@PostMapping(value = "/model/") 
-	public ResponseEntity<?> updateModelFormData(String modelCode, String dailyHireRate, String modelName,
-			String manufacturerCode) {
+	public ResponseEntity<?> updateModelFormData(String modelCode,String manufacturerCode, String dailyHireRate, String modelName
+			) {
 		Manufacturer manu = manufacturerService.findManufactureById(Integer.parseInt(manufacturerCode));
 		Model model = new Model(Integer.parseInt(modelCode), dailyHireRate, modelName, manu);
 		boolean md = modelService.updateModel(Integer.parseInt(modelCode), Integer.parseInt(manufacturerCode),
@@ -93,12 +106,12 @@ public class ModelRestApiController {
 		return new ResponseEntity<Model>(model, HttpStatus.NOT_FOUND);
 	}
 
-	// @RequestMapping(value = "/model/{id}", method = RequestMethod.DELETE)
-	// public ResponseEntity<Model> delete(@PathVariable("id") int id) {
-	// boolean model = modelService.deleteModel(id);
-	// if (model == false) {
-	// return new ResponseEntity<Model>(HttpStatus.NOT_FOUND);
-	// }
-	// return new ResponseEntity<Model>(HttpStatus.NO_CONTENT);
-	// }
+	@RequestMapping(value = "/model/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Model> delete(@PathVariable("id") int id) {
+		boolean model = modelService.deleteModel(id);
+		if (model == false) {
+			return new ResponseEntity<Model>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<Model>(HttpStatus.NO_CONTENT);
+	}
 }
