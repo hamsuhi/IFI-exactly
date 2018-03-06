@@ -79,19 +79,6 @@ public class ModelRestApiController {
 		return new ResponseEntity<Void>(header, HttpStatus.OK);
 	}
 	
-	// add auto a manu from table model --> is being error
-	@PostMapping(value = "/modell///")
-	public ResponseEntity<?> addAutoManuByModel(String dailyHireRate, String modelName, String manufacturerName,
-			String manufacurerDetails, UriComponentsBuilder ucBuilder) {
-		Manufacturer manufacture = new Manufacturer(manufacturerName, manufacurerDetails);
-		manufacturerService.addManufacture(manufacture);
-		Model model = modelService.addModel(dailyHireRate, modelName, manufacture);
-
-		HttpHeaders header = new HttpHeaders();
-		header.setLocation(ucBuilder.path("/api/model/{id}").buildAndExpand(model.getModelCode()).toUri());
-		return new ResponseEntity<Void>(header, HttpStatus.OK);
-	}
-	
 	// update form-data 
 	@PostMapping(value = "/model/") 
 	public ResponseEntity<?> updateModelFormData(String modelCode,String manufacturerCode, String dailyHireRate, String modelName
