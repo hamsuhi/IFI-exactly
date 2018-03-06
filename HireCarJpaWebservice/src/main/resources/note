@@ -1,4 +1,17 @@
-Webservice:
--Update truyen duoc lên           params || raw 
+****Webservice:
+-Update truyen duoc len           params || raw 
 Khi dung form-data, ALL KDL truyen tham so vao  la "STRING" => ep kieu
 -Add truyen duoc len form-data || params || raw || x-www-form
+
+_________Node: Bang cha chua PK, bang con chua FK._____________
+
+**** CSDL voi net dut
++ Diff: Khi them data vao 1 bang, Cac truong dat la null deu co the de NULL, ke ca FK.
++ them, sua bang cha(PK) -> moi them duoc bang con(FK) (1-n)
++ xoa duoc bang con(chua FK) -> moi xoa duoc bang cha ( chua PK) (n-1)
+
+**** CSDL voi net lien:
++ Cac truong dat NULL trong bang 1(bang cha) can NULL
+  Diff: Khi them data vao Table, FK khong the NULL.
++ Them, sua bang cha -> them duoc bang con. 
++ xoa duoc bang con(chua FK) -> moi xoa duoc bang cha ( chua PK) (n-1)
