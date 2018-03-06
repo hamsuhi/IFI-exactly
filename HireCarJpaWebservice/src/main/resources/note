@@ -15,3 +15,7 @@ _________Node: Bang cha chua PK, bang con chua FK._____________
   Diff: Khi them data vao Table, FK khong the NULL.
 + Them, sua bang cha -> them duoc bang con. 
 + xoa duoc bang con(chua FK) -> moi xoa duoc bang cha ( chua PK) (n-1)
+
+**** Giai phap cho delete: Cach xoa truc tiep bang cha ma khong phai "xoa bang con moi xoa duoc bang cha":
+- Nếu là identify thì k đc, còn non-identify thi OK (tức là nét đứt thì đc, còn nét liền thì ko)
+No se tu dong xoa nhung gi lien ket voi no.
