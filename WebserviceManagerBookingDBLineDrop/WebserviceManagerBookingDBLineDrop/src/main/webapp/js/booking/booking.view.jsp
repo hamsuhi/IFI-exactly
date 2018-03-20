@@ -79,7 +79,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="p in ctrl.getAllBookings()  | filter:findAll">
+			<tr ng-repeat="p in ctrl.getAllBookings()  | filter:findAll | orderBy:'bookName' ">
 				<td>{{p.bookingId}}</td>
 				<td>{{p.bookingCol}}</td>
 				<td>{{p.bookName}}</td>

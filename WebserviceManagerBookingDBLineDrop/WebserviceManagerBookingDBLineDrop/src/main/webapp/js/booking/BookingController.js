@@ -46,7 +46,6 @@ angular.module('myApp').controller('BookingController', [ 'BookingService', '$sc
 				self.successMessage = '';
 			}
 		);
-
 	}
 
 	function updateBooking(id, booking) {

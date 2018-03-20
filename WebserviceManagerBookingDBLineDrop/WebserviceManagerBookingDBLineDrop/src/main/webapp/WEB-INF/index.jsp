@@ -37,6 +37,9 @@
 <script type="text/javascript" src="/js/booking/BookingService.js"></script>
 <script type="text/javascript" src="/js/booking/BookingController.js"></script>
 
+<script type="text/javascript" src="../js/bookborrowing/BookBorrowingService.js"></script>
+<script type="text/javascript" src="../js/bookborrowing/BookBorrowingController.js"></script>
+
 </head>
 
 <body>

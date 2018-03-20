@@ -52,7 +52,17 @@ app.config(['$stateProvider','$urlRouterProvider',
 		var bookborrowingState = {
 			name : 'bookborrowing',
 			url : '/bookborrowing',
-			templateUrl : '/js/bookborrowing/bookborrowing.view.jsp'
+			templateUrl : '/js/bookborrowing/bookborrowing.view.jsp',
+			controller: 'BookBorrowingController',
+			controllerAs: 'ctrl',
+			resolve : {
+				bookborrowings : function($q, BookBorrowingService){
+					console.log("Load all book borrowing");
+					var deferred = $q.defer();
+					BookBorrowingService.loadAllBookBorrowings().then(deferred.resolve, deferred.resolve);
+					return deferred.promise;
+				}
+			}
 		};
 
 		//dang ki OBJ

@@ -2,17 +2,19 @@
  * 
  */
 'use strict';
-angular.module('myApp').controller('PersonalController', [ 'PersonalService', '$scope', function(PersonalService, $scope) {
+angular.module('myApp').controller('BookBorrowingController', [ 'BookBorrowingService', '$scope', function(BookBorrowingService, $scope) {
 	var self = this;
-	self.personal = {};//1 OBJ
-	self.personals = [];
+	self.bookborrowing = {}; //1 OBJ
+	self.bookborrowings = [];
 
 	self.submit = submit;
-	self.getAllPersonals = getAllPersonals;
-	self.createPersonal = createPersonal;
-	self.updatePersonal = updatePersonal;
-	self.removePersonal = removePersonal;
-	self.personalToSubmit = personalToSubmit;
+	self.getAllBookBorrowings = getAllBookBorrowings;
+	self.getAllReaders = getAllReaders;
+	self.getAllBookings = getAllBookings;
+	self.createBookBorrowing = createBookBorrowing;
+	self.updateBookBorrowing = updateBookBorrowing;
+	self.removeBookBorrowing = removeBookBorrowing;
+	self.bookborrowingToSubmit = bookborrowingToSubmit;
 	self.reset = reset;
 
 
@@ -20,53 +22,58 @@ angular.module('myApp').controller('PersonalController', [ 'PersonalService', '$
 	self.errorMessage = '';
 	self.done = false;
 
-
-
 	function submit() {
-		if (self.personal.id === undefined || self.personal.id === null) {
-			createPersonal(self.personal);
+		if (self.bookborrowing.id === undefined || self.bookborrowing.id === null) {
+			createBookBorrowing(self.bookborrowing);
 		} else {
-			updatePersonal(self.personal.id, self.personal);
+			updateBookBorrowing(self.bookborrowing.id, self.bookborrowing);
 		}
 	}
 
-	function getAllPersonals() {
-		return PersonalService.getAllPersonals();
+	function getAllBookBorrowings() {
+		return BookBorrowingService.getAllBookBorrowings();
 	}
 
-	function createPersonal(personal) {
-		PersonalService.createPersonal(personal).then(
-			function(response) {
-				self.successMessage = 'Personal created successfully';
-				self.errorMessage = '';
-				self.done = true;
-				self.personal = {};
-				$scope.personalForm.$setPristine();
-			}, function(errResponse) {
-				self.errorMessage = 'Error while createing Personal: ' + errResponse;
-				self.successMessage = '';
-			}
-		);
-
+	function getAllReaders() {
+		return ReaderService.getAllReaders();
 	}
 
-	function updatePersonal(id, personal) {
-		PersonalService.updatePersonal(id, personal).then(
+	function getAllBookings() {
+		return BookingService.getAllBookings();
+	}
+
+	function createBookBorrowing(bookborrowing) {
+		BookBorrowingService.createBookBorrowing(bookborrowing).then(
 			function(response) {
-				self.successMessage = 'Personal updated successfully';
+				self.successMessage = 'BookBorrowing created successfully';
 				self.errorMessage = '';
 				self.done = true;
-				$scope.personalForm.$setPristine();
+				self.bookborrowing = {};
+				$scope.bookborrowingForm.$setPristine();
 			}, function(errResponse) {
-				self.errorMessage = 'Error while updateing Personal: ' + errResponse;
+				self.errorMessage = 'Error while createing BookBorrowing: ' + errResponse;
 				self.successMessage = '';
 			}
 		);
 	}
-	function removePersonal(id) {
-		PersonalService.removePersonal(id).then(
+
+	function updateBookBorrowing(id, bookborrowing) {
+		BookBorrowingService.updateBookBorrowing(id, bookborrowing).then(
 			function(response) {
-				self.successMessage = 'Personal deleted successfully';
+				self.successMessage = 'bookborrowing updated successfully';
+				self.errorMessage = '';
+				self.done = true;
+				$scope.bookborrowingForm.$setPristine();
+			}, function(errResponse) {
+				self.errorMessage = 'Error while updateing BookBorrowing: ' + errResponse;
+				self.successMessage = '';
+			}
+		);
+	}
+	function removeBookBorrowing(id) {
+		BookBorrowingService.removeBookBorrowing(id).then(
+			function(response) {
+				self.successMessage = 'BookBorrowing deleted successfully';
 				self.errorMessage = '';
 				self.done = true;
 			}
@@ -75,20 +82,20 @@ angular.module('myApp').controller('PersonalController', [ 'PersonalService', '$
 	}
 
 
-	function personalToSubmit(id) {
+	function bookborrowingToSubmit(id) {
 		self.successMessage = '';
 		self.errorMessage = '';
-		PersonalService.getPersonal(id).then(
-			function(personal) {
-				self.personal = personal;
-				self.personal.dob = new Date(self.personal.dob);
+		BookBorrowingService.getBookBorrowing(id).then(
+			function(bookborrowing) {
+				self.bookborrowing = bookborrowing;
+				self.bookborrowing.dob = new Date(self.bookborrowing.dob);
 			}
 		);
 	}
 	function reset() {
 		self.successMessage = '';
 		self.errorMessage = '';
-		self.personal = {};
-		$scope.personalForm.$setPristine();
+		self.bookborrowing = {};
+		$scope.bookborrowingForm.$setPristine();
 	}
 } ])

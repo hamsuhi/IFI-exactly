@@ -32,7 +32,7 @@
                             <div class="col-md-7">
                                 <input type="text" ng-model="ctrl.reader.fullName" id="name" class="form-control input-sm" placeholder="Enter your Fullname" required/>
                             </div>
-                        </div>s
+                        </div>
                     </div>
                     
                     <div class="row">

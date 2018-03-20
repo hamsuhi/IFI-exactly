@@ -36,6 +36,7 @@ public class BookingService {
 	}
 
 	public boolean addBooking(Booking booking) {
+		
 		if (bookingRepository.save(booking) != null) {
 			return true;
 		}
