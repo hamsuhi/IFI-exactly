@@ -35,11 +35,11 @@ angular.module('myApp').controller('BookBorrowingController', [ 'BookBorrowingSe
 	}
 
 	function getAllReaders() {
-		return ReaderService.getAllReaders();
+		return BookBorrowingService.getAllReaders();
 	}
 
 	function getAllBookings() {
-		return BookingService.getAllBookings();
+		return BookBorrowingService.getAllBookings();
 	}
 	
 	function createBookBorrowing(bookborrowing) {
